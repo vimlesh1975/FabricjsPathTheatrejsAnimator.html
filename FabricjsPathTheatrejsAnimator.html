@@ -1,79 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Theatre.js Tutorial</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        color: white;
+        background: grey;
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Theatre.js Tutorial</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      color: white;
-      background: grey;
-      font-family: sans-serif;
-    }
-  </style>
-</head>
+  <body>
+    <canvas id="canvas" width="1920" height="1080"></canvas>
 
-<body>
-  <canvas id="canvas" width="1920" height="1080"></canvas>
+    <script type="module">
+      import 'https://cdn.jsdelivr.net/npm/@theatre/browser-bundles@0.5.0-insiders.88df1ef/dist/core-and-studio.js';
+      // We can now access Theatre.core and Theatre.studio from here
+      const { core, studio } = Theatre;
 
-  <script type="module">
-    import 'https://cdn.jsdelivr.net/npm/@theatre/browser-bundles@0.5.0-insiders.88df1ef/dist/core-and-studio.js';
-    // We can now access Theatre.core and Theatre.studio from here
-    const { core, studio } = Theatre;
+      studio.initialize(); // Start the Theatre.js UI
 
-    studio.initialize(); // Start the Theatre.js UI
-
-    // Initialize Fabric.js canvas
-    var canvas = new fabric.Canvas('canvas');
-    // Create a sample SVG path
-    var pathData = 'M50 50 L100 150 Q150 200 200 150 L250 50 Z';
-    var path = new fabric.Path(pathData, {
-      left: 550,
-      top: 250,
-      fill: 'yellow',
-      stroke: 'black',
-      strokeWidth: 5,
-    });
-    canvas.add(path);
-    // console.log(path.path[0]);
-
-    const project = core.getProject('HTML Animation Tutorial');
-    const sheet = project.sheet('Sheet 1');
-
-    const path1 = canvas.getObjects()[0];
-    const aa = {};
-    path.path.forEach((element, i) => {
-      aa['Point' + i] = {
-        ...path.path[i].map((val, ii) => {
-          return val;
-        }),
-      };
-    });
-
-    const obj = sheet.object('path1', aa);
-
-    obj.onValuesChange((val) => {
-      var newPath = [...path1.path];
-      newPath.forEach((element, i) => {
-        const ss=[];
-        if (val['Point' + i][0]) ss.push(val['Point' + i][0]);
-        if (val['Point' + i][1]) ss.push(val['Point' + i][1]);
-        if (val['Point' + i][2]) ss.push(val['Point' + i][2]);
-        if (val['Point' + i][3]) ss.push(val['Point' + i][3]);
-        if (val['Point' + i][4]) ss.push(val['Point' + i][4]);
-        if (val['Point' + i][5]) ss.push(val['Point' + i][5]);
-        newPath[i] = ss
+      // Initialize Fabric.js canvas
+      var canvas = new fabric.Canvas('canvas');
+      // Create a sample SVG path
+      var pathData = 'M50 50 L100 150 Q150 200 200 150 L250 50 Z';
+      var path = new fabric.Path(pathData, {
+        left: 550,
+        top: 250,
+        fill: 'yellow',
+        stroke: 'black',
+        strokeWidth: 5,
+        strokeUniform: false,
+        objectCaching: false,
       });
-      path1.set({ path: newPath });
-      // console.log(path1.path);
-      canvas.requestRenderAll();
-    });
+      canvas.add(path);
+      // console.log(path.path[0]);
 
-  </script>
-</body>
+      const project = core.getProject('fabricjs path Animation');
+      const sheet = project.sheet('Sheet 1');
 
+      const path1 = canvas.getObjects()[0];
+      const aa = {};
+      path.path.forEach((element, i) => {
+        aa['Point' + i] = {
+          ...path.path[i].map((val, ii) => {
+            return val;
+          }),
+        };
+      });
+
+      function getObjectSizeWithStroke(object) {
+        var stroke = new fabric.Point(
+          object.strokeUniform ? 1 / object.scaleX : 1,
+          object.strokeUniform ? 1 / object.scaleY : 1
+        ).multiply(object.strokeWidth);
+        return new fabric.Point(
+          object.width + stroke.x,
+          object.height + stroke.y
+        );
+      }
+
+      const obj = sheet.object('path1', aa);
+
+      obj.onValuesChange((val) => {
+        var newPath = [...path1.path];
+        newPath.forEach((element, i) => {
+          const ss = [];
+          if (val['Point' + i][0]) ss.push(val['Point' + i][0]);
+          if (val['Point' + i][1]) ss.push(val['Point' + i][1]);
+          if (val['Point' + i][2]) ss.push(val['Point' + i][2]);
+          if (val['Point' + i][3]) ss.push(val['Point' + i][3]);
+          if (val['Point' + i][4]) ss.push(val['Point' + i][4]);
+          if (val['Point' + i][5]) ss.push(val['Point' + i][5]);
+          newPath[i] = ss;
+        });
+
+        path1.set({ path: newPath });
+        // console.log(getObjectSizeWithStroke(path1));
+        // path1.calcTransformMatrix();
+        // path1.setCoords();
+        // path1._calcDimensions();
+        canvas.requestRenderAll();
+        // canvas.renderAll();
+        // console.log(newPath);
+        // console.log(path1.path);
+      });
+    </script>
+  </body>
 </html>
