@@ -13,6 +13,7 @@
         color: white;
         background: grey;
         font-family: sans-serif;
+        overflow: hidden;
       }
     </style>
   </head>
@@ -32,33 +33,28 @@
       window.canvas = canvas;
       // Create a sample SVG path
       var pathData = 'M50 50 L100 150 Q150 200 200 150 L250 50 Z';
-      var path = new fabric.Path(pathData, {
-        left: 550,
-        top: 250,
+      var path1 = new fabric.Path(pathData, {
+        left: 650,
+        top: 150,
         fill: 'yellow',
-        stroke: 'black',
+        stroke: 'red',
         strokeWidth: 5,
         strokeUniform: false,
         objectCaching: false,
       });
-      canvas.add(path);
+      canvas.add(path1);
       // console.log(path.path[0]);
 
       const project = core.getProject('fabricjs path Animation');
       const sheet = project.sheet('Sheet 1');
 
-      const path1 = canvas.getObjects()[0];
+      // const path1 = canvas.getObjects()[0];
       path1.on('mousedblclick', (e) => {
-        console.log(e);
         edit();
       });
       const aa = {};
-      path.path.forEach((element, i) => {
-        aa['Point' + i] = {
-          ...path.path[i].map((val, ii) => {
-            return val;
-          }),
-        };
+      path1.path.forEach((element, i) => {
+        aa['Point' + i] = { ...element };
       });
 
       function getObjectSizeWithStroke(object) {
@@ -73,6 +69,16 @@
       }
 
       const obj = sheet.object('path1', aa);
+
+      const syncProps = () => {
+        studio.transaction(({ set }) => {
+          path1.path.forEach((val, i) => {
+            val.forEach((val1, ii) => {
+              set(obj.props['Point' + i][ii], val1);
+            });
+          });
+        });
+      };
 
       obj.onValuesChange((val) => {
         var newPath = [...path1.path];
@@ -119,6 +125,7 @@
             newY + 0.5
           );
           // dispatch({ type: 'CHANGE_PATH1', payload: fabricObject.path });
+          syncProps();
 
           return actionPerformed;
         };
