@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Theatre.js Tutorial</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/6.0.0-rc.1/fabric.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script> -->
     <style>
       body {
         margin: 0;
@@ -81,12 +82,16 @@
           newPath[i] = ss;
         });
 
-        path1.set({ path: newPath });
+        // path1.set({ path: newPath });
+        const { left, top } = path1;
+        path1._setPath(newPath);
+        path1.set({ left, top });
         // console.log(getObjectSizeWithStroke(path1));
         // path1.calcTransformMatrix();
         // path1.setCoords();
         // path1._calcDimensions();
         canvas.requestRenderAll();
+
         // canvas.renderAll();
         // console.log(newPath);
         // console.log(path1.path);
