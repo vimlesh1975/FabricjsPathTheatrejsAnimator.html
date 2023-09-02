@@ -528,6 +528,29 @@
       document.getElementById('menu-item-2').addEventListener('click', () => {
         closePath();
       });
+      document.addEventListener('keydown', (event) => {
+  // Check if the pressed key is the "Delete" or "Backspace" key
+  if (event.key === 'Delete') {
+    // Your delete key handling code here
+    // For example, you can delete the selected object in your canvas
+    deleteSelectedObject();
+  }
+});
+
+function deleteSelectedObject() {
+  // Implement the logic to delete the selected object from your canvas here
+  // You can access your canvas and selected object and remove it accordingly
+  // For example, if you are using Fabric.js, you can use canvas.remove(object);
+  if (window.canvas) {
+    const selectedObject = window.canvas.getActiveObject();
+    if (selectedObject) {
+      window.canvas.remove(selectedObject);
+      // Update any other necessary data structures or perform actions
+      sheet.detachObject(selectedObject.id)
+    }
+  }
+}
+
     </script>
   </body>
 </html>
