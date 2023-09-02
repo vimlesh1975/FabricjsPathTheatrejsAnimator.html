@@ -23,12 +23,16 @@
         border: 1px solid #ccc;
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         color: black;
+        z-index: 102; /* Set the z-index to a value greater than 101 */
       }
 
       /* Define context menu item styles */
       .context-menu-item {
         padding: 8px 16px;
         cursor: pointer;
+      }
+      .context-menu-item:hover {
+        background-color: brown;
       }
     </style>
   </head>
@@ -38,9 +42,8 @@
     <button onclick="closePath()">Close Path</button>
     <!-- Context menu container -->
     <div id="context-menu">
-      <div class="context-menu-item" id="menu-item-1">Menu Item 1</div>
-      <div class="context-menu-item" id="menu-item-2">Menu Item 2</div>
-      <div class="context-menu-item" id="menu-item-3">Menu Item 3</div>
+      <div class="context-menu-item" id="menu-item-1">Start Path</div>
+      <div class="context-menu-item" id="menu-item-2">Close Path</div>
     </div>
 
     <canvas id="canvas" width="1920" height="1080"></canvas>
@@ -118,25 +121,32 @@
         });
       };
 
-      id_1.onValuesChange((val) => {
-        var newPath = [...path1.path];
-        newPath.forEach((element, i) => {
-          const ss = [];
-          if (val['Point' + i][0]) ss.push(val['Point' + i][0]);
-          if (val['Point' + i][1]) ss.push(val['Point' + i][1]);
-          if (val['Point' + i][2]) ss.push(val['Point' + i][2]);
-          if (val['Point' + i][3]) ss.push(val['Point' + i][3]);
-          if (val['Point' + i][4]) ss.push(val['Point' + i][4]);
-          if (val['Point' + i][5]) ss.push(val['Point' + i][5]);
-          newPath[i] = ss;
-        });
-
+      const adjustPosition = (path1, newPath) => {
         const { left, top } = path1;
-        path1._setPath(newPath);
-        path1.set({ left, top });
+        path1.set({ path: newPath });
+        // path1._setPath(newPath);
+        // path1.set({ left, top });
         canvas.requestRenderAll();
-      });
+      };
 
+      const createcallback = (id_1, path1) => {
+        id_1.onValuesChange((val) => {
+          var newPath = [...path1.path];
+          newPath.forEach((element, i) => {
+            const ss = [];
+            if (val['Point' + i][0]) ss.push(val['Point' + i][0]);
+            if (val['Point' + i][1]) ss.push(val['Point' + i][1]);
+            if (val['Point' + i][2]) ss.push(val['Point' + i][2]);
+            if (val['Point' + i][3]) ss.push(val['Point' + i][3]);
+            if (val['Point' + i][4]) ss.push(val['Point' + i][4]);
+            if (val['Point' + i][5]) ss.push(val['Point' + i][5]);
+            newPath[i] = ss;
+          });
+          adjustPosition(path1, newPath);
+        });
+      };
+
+      createcallback(id_1, path1);
       const getObjectbyId = (id) => {
         return arrObject.find((object) => object.address.objectKey === id);
       };
@@ -476,25 +486,7 @@
           });
           const obj = sheet.object(rect.id, aa);
           arrObject.push(obj);
-
-          obj.onValuesChange((val) => {
-            var newPath = [...rect.path];
-            newPath.forEach((element, i) => {
-              const ss = [];
-              if (val['Point' + i][0]) ss.push(val['Point' + i][0]);
-              if (val['Point' + i][1]) ss.push(val['Point' + i][1]);
-              if (val['Point' + i][2]) ss.push(val['Point' + i][2]);
-              if (val['Point' + i][3]) ss.push(val['Point' + i][3]);
-              if (val['Point' + i][4]) ss.push(val['Point' + i][4]);
-              if (val['Point' + i][5]) ss.push(val['Point' + i][5]);
-              newPath[i] = ss;
-            });
-
-            const { left, top } = rect;
-            rect._setPath(newPath);
-            rect.set({ left, top });
-            canvas.requestRenderAll();
-          });
+          createcallback(obj, rect);
         }
         canvas.off('mouse:down');
         canvas.off('mouse:move');
@@ -511,35 +503,28 @@
       // Get references to the context menu and content
       const contextMenu = document.getElementById('context-menu');
 
-      // const content = document.getElementById('content');
-
       // Prevent the default right-click context menu
       document.addEventListener('contextmenu', (e) => {
-        closePath();
         e.preventDefault();
         // Show the custom context menu at the mouse position
-        // contextMenu.style.left = e.pageX + 'px';
-        // contextMenu.style.top = e.pageY + 'px';
-        // contextMenu.style.display = 'block';
+
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+        contextMenu.style.display = 'block';
       });
 
-      // Hide the context menu when clicking outside of it
+      // Listen for clicks on the document
       document.addEventListener('click', () => {
+        // Check the flag to determine whether to hide the context menu or not
         contextMenu.style.display = 'none';
       });
-
       // Handle clicks on context menu items
-      document.getElementById('menu-item-1').addEventListener('click', () => {
-        // alert('You clicked Menu Item 1');
-        console.log('hhh');
+      document.getElementById('menu-item-1').addEventListener('click', (e) => {
+        startPath();
       });
 
       document.getElementById('menu-item-2').addEventListener('click', () => {
-        alert('You clicked Menu Item 2');
-      });
-
-      document.getElementById('menu-item-3').addEventListener('click', () => {
-        alert('You clicked Menu Item 3');
+        closePath();
       });
     </script>
   </body>
