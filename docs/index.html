@@ -42,7 +42,7 @@
         strokeUniform: false,
         objectCaching: false,
       });
-      canvas.add(path1);
+      canvas.add(path1).setActiveObject(path1);
       // console.log(path.path[0]);
 
       const project = core.getProject('fabricjs path Animation');
@@ -230,6 +230,7 @@
       }
 
       function edit() {
+        console.log('lll');
         // clone what are you copying since you
         // may want copy and paste on different moment.
         // and you do not want the changes happened
@@ -330,6 +331,8 @@
           )
         );
       }
+      console.log('first');
+      edit();
     </script>
   </body>
 </html>
