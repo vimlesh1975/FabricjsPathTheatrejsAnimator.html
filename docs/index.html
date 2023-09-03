@@ -68,11 +68,11 @@
       var canvas = new fabric.Canvas('canvas');
       window.canvas = canvas;
       // Create a sample SVG path
-      var pathData = 'M50 50 L100 150 Q150 200 200 150 L250 50 Z';
+      var pathData = 'd=M 322 195 Q 598 198 712 93 C 1014 121 1265 251 1025 391 Q 965 596 819 581 Q 570 388 315 373 z';
       var path1 = new fabric.Path(pathData, {
         id: 'id_1',
         class: 'class_' + fabric.Object.__uid,
-        left: 650,
+        left: 450,
         top: 150,
         fill: 'yellow',
         stroke: 'red',
@@ -140,6 +140,7 @@
             if (val['Point' + i][3]) ss.push(val['Point' + i][3]);
             if (val['Point' + i][4]) ss.push(val['Point' + i][4]);
             if (val['Point' + i][5]) ss.push(val['Point' + i][5]);
+            if (val['Point' + i][6]) ss.push(val['Point' + i][6]);
             newPath[i] = ss;
           });
           adjustPosition(path1, newPath);
