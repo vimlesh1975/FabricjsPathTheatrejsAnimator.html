@@ -271,7 +271,7 @@
           styleOverride,
           fabricObject
         ) {
-          ctx.font = '35px Georgia';
+          ctx.font = '25px Georgia';
 
           if (point[0] === 'C' && icon % 10 === 1) {
             ctx.beginPath();
@@ -296,19 +296,19 @@
             ctx.closePath(); // Close the path (optional, but good practice)
             ctx.restore();
           } else {
-            // // Draw the circle
-            // ctx.save();
-            // ctx.beginPath(); // Begin a new path
-            // ctx.arc(left, top, 5, 0, 2 * Math.PI); // Define the circle
-            // ctx.fillStyle = 'white'; // Set the fill color
-            // ctx.fill(); // Fill the circle with the specified color
-            // ctx.closePath(); // Close the path (optional, but good practice)
-            // ctx.restore();
+            // Draw the circle
+            ctx.save();
+            ctx.beginPath(); // Begin a new path
+            ctx.arc(left, top, 5, 0, 2 * Math.PI); // Define the circle
+            ctx.fillStyle = 'white'; // Set the fill color
+            ctx.fill(); // Fill the circle with the specified color
+            ctx.closePath(); // Close the path (optional, but good practice)
+            ctx.restore();
           }
           // }
 
           ctx.textAlign = 'center';
-          ctx.fillText(icon, left, top);
+          ctx.fillText(icon, left, top - 10);
         };
       }
 
