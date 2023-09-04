@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fabric.js Bezier Path</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/6.0.0-rc.1/fabric.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+
+    <script>
+      // Initialize Fabric.js canvas
+      const canvas = new fabric.Canvas('canvas');
+
+      // Define a Bezier Path with Control Points
+      const bezierPath = new fabric.Path(
+        'M 50 100 C 100 100, 200 200, 250 100',
+        {
+          fill: '',
+          stroke: 'blue',
+          strokeWidth: 2,
+          selectable: false,
+        }
+      );
+
+      // Create control points for the Bezier path
+      const controlPoints = [
+        new fabric.Circle({
+          left: 50,
+          top: 100,
+          radius: 5,
+          fill: 'red',
+          selectable: true,
+        }),
+        new fabric.Circle({
+          left: 100,
+          top: 100,
+          radius: 5,
+          fill: 'red',
+          selectable: true,
+        }),
+        new fabric.Circle({
+          left: 200,
+          top: 200,
+          radius: 5,
+          fill: 'red',
+          selectable: true,
+        }),
+        new fabric.Circle({
+          left: 250,
+          top: 100,
+          radius: 5,
+          fill: 'red',
+          selectable: true,
+        }),
+      ];
+
+      // Add the Bezier Path and Control Points to the Canvas
+      const group = new fabric.Group([bezierPath, ...controlPoints], {
+        selectable: true,
+      });
+      canvas.add(group);
+
+      // Make the control points draggable
+      controlPoints.forEach((point) => {
+        point.on('moving', () => {
+          // Update the Bezier path based on the control point positions
+          const pathData = `M ${controlPoints[0].left} ${controlPoints[0].top} C ${controlPoints[1].left} ${controlPoints[1].top}, ${controlPoints[2].left} ${controlPoints[2].top}, ${controlPoints[3].left} ${controlPoints[3].top}`;
+          bezierPath.set({ path: pathData });
+          canvas.requestRenderAll();
+        });
+      });
+    </script>
+  </body>
+</html>

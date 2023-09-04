@@ -68,11 +68,12 @@
       var canvas = new fabric.Canvas('canvas');
       window.canvas = canvas;
       // Create a sample SVG path
-      var pathData = 'd=M 322 195 Q 598 198 712 93 C 1014 121 1265 251 1025 391 Q 965 596 819 581 Q 570 388 315 373 z';
+      var pathData =
+        'd=M 322 195 Q 598 10 712 93 C 1014 121 1265 251 1025 391  Q 570 580 315 373 z';
       var path1 = new fabric.Path(pathData, {
         id: 'id_1',
         class: 'class_' + fabric.Object.__uid,
-        left: 450,
+        left: 150,
         top: 150,
         fill: 'yellow',
         stroke: 'red',
@@ -260,8 +261,9 @@
 
         return true;
       }
-
-      function renderIcon(icon) {
+      var pointCount = 0;
+      var prePoint = '';
+      function renderIcon(icon, point) {
         return function renderIcon(
           ctx,
           left,
@@ -269,15 +271,44 @@
           styleOverride,
           fabricObject
         ) {
-          // var size = this.cornerSize;
-          ctx.save();
-          //   ctx.translate(left, top);
-          //   ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
           ctx.font = '35px Georgia';
+
+          if (point[0] === 'C' && icon % 10 === 1) {
+            ctx.beginPath();
+            ctx.moveTo(left, top);
+          } else {
+            ctx.lineTo(left, top);
+            ctx.stroke();
+          }
+
+          // if (point[0] !== 'M') {
+          if (
+            (point[0] !== 'M' && point[0] === 'C' && icon % 10 !== 2) ||
+            (point[0] === 'Q' && icon % 10 !== 1)
+          ) {
+            // Draw the circle
+            ctx.save();
+
+            ctx.beginPath(); // Begin a new path
+            ctx.arc(left, top, 5, 0, 2 * Math.PI); // Define the circle
+            ctx.fillStyle = 'black'; // Set the fill color
+            ctx.fill(); // Fill the circle with the specified color
+            ctx.closePath(); // Close the path (optional, but good practice)
+            ctx.restore();
+          } else {
+            // // Draw the circle
+            // ctx.save();
+            // ctx.beginPath(); // Begin a new path
+            // ctx.arc(left, top, 5, 0, 2 * Math.PI); // Define the circle
+            // ctx.fillStyle = 'white'; // Set the fill color
+            // ctx.fill(); // Fill the circle with the specified color
+            // ctx.closePath(); // Close the path (optional, but good practice)
+            // ctx.restore();
+          }
+          // }
 
           ctx.textAlign = 'center';
           ctx.fillText(icon, left, top);
-          ctx.restore();
         };
       }
 
@@ -305,7 +336,7 @@
                   ),
                   actionName: 'modifyPolygon',
                   pointIndex: index,
-                  render: renderIcon(`${index + 1}0`),
+                  render: renderIcon(`${index + 1}0`, point),
                 });
                 if (point[0] === 'Q' || point[0] === 'C') {
                   acc['p2nd' + index] = new fabric.Control({
@@ -316,7 +347,7 @@
                     ),
                     actionName: 'modifyPolygon2',
                     pointIndex: index,
-                    render: renderIcon(`${index + 1}1`),
+                    render: renderIcon(`${index + 1}1`, point),
                   });
                 }
                 if (point[0] === 'C') {
@@ -328,7 +359,7 @@
                     ),
                     actionName: 'modifyPolygon3',
                     pointIndex: index,
-                    render: renderIcon(`${index + 1}2`),
+                    render: renderIcon(`${index + 1}2`, point),
                   });
                 }
               }
@@ -530,28 +561,27 @@
         closePath();
       });
       document.addEventListener('keydown', (event) => {
-  // Check if the pressed key is the "Delete" or "Backspace" key
-  if (event.key === 'Delete') {
-    // Your delete key handling code here
-    // For example, you can delete the selected object in your canvas
-    deleteSelectedObject();
-  }
-});
+        // Check if the pressed key is the "Delete" or "Backspace" key
+        if (event.key === 'Delete') {
+          // Your delete key handling code here
+          // For example, you can delete the selected object in your canvas
+          deleteSelectedObject();
+        }
+      });
 
-function deleteSelectedObject() {
-  // Implement the logic to delete the selected object from your canvas here
-  // You can access your canvas and selected object and remove it accordingly
-  // For example, if you are using Fabric.js, you can use canvas.remove(object);
-  if (window.canvas) {
-    const selectedObject = window.canvas.getActiveObject();
-    if (selectedObject) {
-      window.canvas.remove(selectedObject);
-      // Update any other necessary data structures or perform actions
-      sheet.detachObject(selectedObject.id)
-    }
-  }
-}
-
+      function deleteSelectedObject() {
+        // Implement the logic to delete the selected object from your canvas here
+        // You can access your canvas and selected object and remove it accordingly
+        // For example, if you are using Fabric.js, you can use canvas.remove(object);
+        if (window.canvas) {
+          const selectedObject = window.canvas.getActiveObject();
+          if (selectedObject) {
+            window.canvas.remove(selectedObject);
+            // Update any other necessary data structures or perform actions
+            sheet.detachObject(selectedObject.id);
+          }
+        }
+      }
     </script>
   </body>
 </html>
