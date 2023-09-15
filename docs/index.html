@@ -93,39 +93,40 @@
       path1.on('mousedown', () => {
         studio.setSelection([getObjectbyId(path1.id)]);
       });
-      const aa = {};
-      path1.path.forEach((element, i) => {
-        const newi = i + 1;
+      const getModifiedObject = (path1) => {
+        const aa = {};
+        path1.path.forEach((element, i) => {
+          const newi = i + 1;
 
-        const originalArray = element;
-        const myObject = { ...originalArray };
+          const originalArray = element;
+          const myObject = { ...originalArray };
 
-        // Create a new object with modified keys
-        const modifiedObject = {};
-        for (const key in myObject) {
-          if (key === '1') {
-            modifiedObject[newi * 10 + 'x'] = myObject[key];
-          } else if (key === '2') {
-            modifiedObject[newi * 10 + 'y'] = myObject[key];
-          } else if (key === '3') {
-            modifiedObject[newi * 10 + 1 + 'x'] = myObject[key];
-          } else if (key === '4') {
-            modifiedObject[newi * 10 + 1 + 'y'] = myObject[key];
-          } else if (key === '5') {
-            modifiedObject[newi * 10 + 2 + 'x'] = myObject[key];
-          } else if (key === '6') {
-            modifiedObject[newi * 10 + 2 + 'y'] = myObject[key];
-          } else {
-            modifiedObject[key] = myObject[key];
+          // Create a new object with modified keys
+          const modifiedObject = {};
+          for (const key in myObject) {
+            if (key === '1') {
+              modifiedObject[newi * 10 + 'x'] = myObject[key];
+            } else if (key === '2') {
+              modifiedObject[newi * 10 + 'y'] = myObject[key];
+            } else if (key === '3') {
+              modifiedObject[newi * 10 + 1 + 'x'] = myObject[key];
+            } else if (key === '4') {
+              modifiedObject[newi * 10 + 1 + 'y'] = myObject[key];
+            } else if (key === '5') {
+              modifiedObject[newi * 10 + 2 + 'x'] = myObject[key];
+            } else if (key === '6') {
+              modifiedObject[newi * 10 + 2 + 'y'] = myObject[key];
+            } else {
+              modifiedObject[key] = myObject[key];
+            }
           }
-        }
 
-        console.log(modifiedObject);
+          aa['Point' + newi] = modifiedObject;
+        });
+        return aa;
+      };
 
-        // aa['Point' + newi] = { ...element };
-        aa['Point' + newi] = modifiedObject;
-      });
-      const id_1 = sheet.object(path1.id, aa);
+      const id_1 = sheet.object(path1.id, getModifiedObject(path1));
       const arrObject = [];
       arrObject.push(id_1);
 
@@ -558,12 +559,7 @@
 
           canvas.requestRenderAll();
 
-          const aa = {};
-          rect.path.forEach((element, i) => {
-            const newi = i + 1;
-            aa['Point' + newi] = { ...element };
-          });
-          const obj = sheet.object(rect.id, aa);
+          const obj = sheet.object(rect.id, getModifiedObject(rect));
           arrObject.push(obj);
           createcallback(obj, rect);
         }
