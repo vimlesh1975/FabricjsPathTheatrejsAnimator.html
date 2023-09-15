@@ -95,7 +95,8 @@
       });
       const aa = {};
       path1.path.forEach((element, i) => {
-        aa['Point' + i] = { ...element };
+        const newi = i + 1;
+        aa['Point' + newi] = { ...element };
       });
       const id_1 = sheet.object(path1.id, aa);
       const arrObject = [];
@@ -115,8 +116,9 @@
       const syncProps = (mypath, myObj) => {
         studio.transaction(({ set }) => {
           mypath.path.forEach((val, i) => {
+            const newi = i + 1;
             val.forEach((val1, ii) => {
-              set(myObj.props['Point' + i][ii], val1);
+              set(myObj.props['Point' + newi][ii], val1);
             });
           });
         });
@@ -134,14 +136,15 @@
         id_1.onValuesChange((val) => {
           var newPath = [...path1.path];
           newPath.forEach((element, i) => {
+            const newi = i + 1;
             const ss = [];
-            if (val['Point' + i][0]) ss.push(val['Point' + i][0]);
-            if (val['Point' + i][1]) ss.push(val['Point' + i][1]);
-            if (val['Point' + i][2]) ss.push(val['Point' + i][2]);
-            if (val['Point' + i][3]) ss.push(val['Point' + i][3]);
-            if (val['Point' + i][4]) ss.push(val['Point' + i][4]);
-            if (val['Point' + i][5]) ss.push(val['Point' + i][5]);
-            if (val['Point' + i][6]) ss.push(val['Point' + i][6]);
+            if (val['Point' + newi][0]) ss.push(val['Point' + newi][0]);
+            if (val['Point' + newi][1]) ss.push(val['Point' + newi][1]);
+            if (val['Point' + newi][2]) ss.push(val['Point' + newi][2]);
+            if (val['Point' + newi][3]) ss.push(val['Point' + newi][3]);
+            if (val['Point' + newi][4]) ss.push(val['Point' + newi][4]);
+            if (val['Point' + newi][5]) ss.push(val['Point' + newi][5]);
+            if (val['Point' + newi][6]) ss.push(val['Point' + newi][6]);
             newPath[i] = ss;
           });
           adjustPosition(path1, newPath);
@@ -514,7 +517,8 @@
 
           const aa = {};
           rect.path.forEach((element, i) => {
-            aa['Point' + i] = { ...element };
+            const newi = i + 1;
+            aa['Point' + newi] = { ...element };
           });
           const obj = sheet.object(rect.id, aa);
           arrObject.push(obj);
