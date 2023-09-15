@@ -96,7 +96,34 @@
       const aa = {};
       path1.path.forEach((element, i) => {
         const newi = i + 1;
-        aa['Point' + newi] = { ...element };
+
+        const originalArray = element;
+        const myObject = { ...originalArray };
+
+        // Create a new object with modified keys
+        const modifiedObject = {};
+        for (const key in myObject) {
+          if (key === '1') {
+            modifiedObject[newi * 10 + 'x'] = myObject[key];
+          } else if (key === '2') {
+            modifiedObject[newi * 10 + 'y'] = myObject[key];
+          } else if (key === '3') {
+            modifiedObject[newi * 10 + 1 + 'x'] = myObject[key];
+          } else if (key === '4') {
+            modifiedObject[newi * 10 + 1 + 'y'] = myObject[key];
+          } else if (key === '5') {
+            modifiedObject[newi * 10 + 2 + 'x'] = myObject[key];
+          } else if (key === '6') {
+            modifiedObject[newi * 10 + 2 + 'y'] = myObject[key];
+          } else {
+            modifiedObject[key] = myObject[key];
+          }
+        }
+
+        console.log(modifiedObject);
+
+        // aa['Point' + newi] = { ...element };
+        aa['Point' + newi] = modifiedObject;
       });
       const id_1 = sheet.object(path1.id, aa);
       const arrObject = [];
@@ -112,13 +139,23 @@
           object.height + stroke.y
         );
       }
+      const getNewII = (newi, ii) => {
+        if (ii === 0) return 0;
+        if (ii === 1) return newi * 10 + 'x';
+        if (ii === 2) return newi * 10 + 'y';
+        if (ii === 3) return newi * 10 + 1 + 'x';
+        if (ii === 4) return newi * 10 + 1 + 'y';
+        if (ii === 5) return newi * 10 + 2 + 'x';
+        if (ii === 6) return newi * 10 + 2 + 'y';
+      };
 
       const syncProps = (mypath, myObj) => {
         studio.transaction(({ set }) => {
           mypath.path.forEach((val, i) => {
             const newi = i + 1;
             val.forEach((val1, ii) => {
-              set(myObj.props['Point' + newi][ii], val1);
+              const newii = getNewII(newi, ii);
+              if (newii !== 0) set(myObj.props['Point' + newi][newii], val1);
             });
           });
         });
@@ -139,12 +176,18 @@
             const newi = i + 1;
             const ss = [];
             if (val['Point' + newi][0]) ss.push(val['Point' + newi][0]);
-            if (val['Point' + newi][1]) ss.push(val['Point' + newi][1]);
-            if (val['Point' + newi][2]) ss.push(val['Point' + newi][2]);
-            if (val['Point' + newi][3]) ss.push(val['Point' + newi][3]);
-            if (val['Point' + newi][4]) ss.push(val['Point' + newi][4]);
-            if (val['Point' + newi][5]) ss.push(val['Point' + newi][5]);
-            if (val['Point' + newi][6]) ss.push(val['Point' + newi][6]);
+            if (val['Point' + newi][newi * 10 + 'x'])
+              ss.push(val['Point' + newi][newi * 10 + 'x']);
+            if (val['Point' + newi][newi * 10 + 'y'])
+              ss.push(val['Point' + newi][newi * 10 + 'y']);
+            if (val['Point' + newi][newi * 10 + 1 + 'x'])
+              ss.push(val['Point' + newi][newi * 10 + 1 + 'x']);
+            if (val['Point' + newi][newi * 10 + 1 + 'y'])
+              ss.push(val['Point' + newi][newi * 10 + 1 + 'y']);
+            if (val['Point' + newi][newi * 10 + 2 + 'x'])
+              ss.push(val['Point' + newi][newi * 10 + 2 + 'x']);
+            if (val['Point' + newi][newi * 10 + 2 + 'y'])
+              ss.push(val['Point' + newi][newi * 10 + 2 + 'y']);
             newPath[i] = ss;
           });
           adjustPosition(path1, newPath);
